@@ -3,6 +3,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import retrofit2.Call;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
             }
         });
     }
+    private String textWord;
     void getReport() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(PREDICTOR_URI_JSON).addConverterFactory(GsonConverterFactory.create()).build();
         RestApi service = retrofit.create(RestApi.class);
@@ -45,7 +47,7 @@ public class MainActivity extends Activity {
             @Override
             public void onResponse(Call<Model> call, Response<Model> response) {
                 try {
-                    String textWord = response.body().text[0].toString();
+                    textWord = response.body().text[0].toString();
                     textView.setText("Предиктор : " + textWord);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -56,5 +58,14 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+    public void click(View view){
+        editText = (EditText) findViewById(R.id.editText1);
+        textView = (TextView) findViewById(R.id.textView1);
+        if (editText.getText().charAt(editText.getText().length()-1) != ' ')
+            editText.setText(editText.getText().toString().replace(editText.getText().toString().split(" ")[editText.getText().toString().split(" ").length -1 ], " ")+ textWord+ " ");
+        else
+            editText.setText(editText.getText().toString()+ " "+ textWord+ " ");
+        editText.setSelection(editText.getText().length());
     }
 }
